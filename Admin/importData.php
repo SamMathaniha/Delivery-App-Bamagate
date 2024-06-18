@@ -28,9 +28,24 @@ if (isset($_POST["submit"])) {
                 $FinancialStatus = $line[2];
                 $ShippingName = $line[34];
                 $ShippingAddress1 = $line[36];
-                $ShippingCity = $line[39];
+                $ShippingCity = ucfirst(strtolower($line[39])); // Capitalize first letter, lowercase the rest
                 $ShippingPhone = $line[43];
                 $OutstandingBalance = $line[51];
+
+                // Determine DeliveryPartner based on ShippingCity
+                $deliveryPartner = 'Unknown';
+                switch ($ShippingCity) {
+                    case 'Colombo':
+                    case 'Negombo':
+                    case 'Gampaha':
+                        $deliveryPartner = 'Direct';
+                        break;
+                    case 'Jaffna':
+                    case 'Kandy':
+                    case 'Athurugiriya':
+                        $deliveryPartner = 'Courier';
+                        break;
+                }
 
                 // Check if all required fields are present
                 if (
@@ -48,10 +63,10 @@ if (isset($_POST["submit"])) {
                     $row = $result->fetch_assoc();
 
                     if ($row['count'] == 0) {
-                        // Insert record into database with a timestamp
-                        $insertQuery = "INSERT INTO importrecords (ID, FinancialStatus, ShippingName, ShippingAddress1, ShippingCity, ShippingPhone, OutstandingBalance, Timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                        // Insert record into database with DeliveryPartner and a timestamp
+                        $insertQuery = "INSERT INTO importrecords (ID, FinancialStatus, ShippingName, ShippingAddress1, ShippingCity, ShippingPhone, OutstandingBalance, DeliveryPartner, Timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt = $conn->prepare($insertQuery);
-                        $stmt->bind_param("sssssssi", $Name, $FinancialStatus, $ShippingName, $ShippingAddress1, $ShippingCity, $ShippingPhone, $OutstandingBalance, $timestamp);
+                        $stmt->bind_param("ssssssssi", $Name, $FinancialStatus, $ShippingName, $ShippingAddress1, $ShippingCity, $ShippingPhone, $OutstandingBalance, $deliveryPartner, $timestamp);
                         $stmt->execute();
                     } else {
                         $duplicateCount++;

@@ -40,13 +40,23 @@ if ($id_filter) {
 }
 
 // Check if date filter is applied and fetch all records if 'view_all' is set
-if ($date_filter || isset($_GET['view_all'])) {
+if ($date_filter || $id_filter || isset($_GET['view_all'])) {
     $query .= " ORDER BY ID DESC";
 } else {
     $query .= " ORDER BY ID DESC LIMIT $records_per_table OFFSET $offset";
 }
 
 $result = $conn->query($query);
+
+// If it's an AJAX request, return the JSON response and exit
+if (isset($_GET['ajax'])) {
+    $records = [];
+    while ($row = $result->fetch_assoc()) {
+        $records[] = $row;
+    }
+    echo json_encode($records);
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -66,6 +76,39 @@ $result = $conn->query($query);
     <link rel="stylesheet" href="../css/Other.css">
 
     <style>
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-container div {
+            width: 48%;
+        }
+
+        input[type="date"],
+        input[type="text"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
         .pagination {
             margin-top: 20px;
             text-align: center;
@@ -75,10 +118,9 @@ $result = $conn->query($query);
             background-color: #f2f2f2;
             border: 1px solid #ddd;
             color: black;
-            float: left;
             padding: 8px 16px;
             text-decoration: none;
-            transition: background-color .3s;
+            transition: background-color 0.3s;
             margin: 0 4px;
         }
 
@@ -118,25 +160,50 @@ $result = $conn->query($query);
                 $(".wrapper").toggleClass("active");
             });
 
-            // Real-time filtering by ID
-            $('#id-filter').on('input', function () {
-                filterRecords();
-            });
-
-            // Filtering by date
-            $('#date-filter').on('change', function () {
+            // Real-time filtering by ID and date
+            $('#id-filter, #date-filter').on('input change', function () {
                 filterRecords();
             });
 
             // View All Records
             $('#view-all').on('click', function () {
-                window.location.href = '?view_all=1';
+                window.location.href = 'ViewAllRecords.php';
             });
 
             function filterRecords() {
                 var date = $('#date-filter').val();
                 var id = $('#id-filter').val();
-                window.location.href = '?date=' + date + '&id=' + id;
+
+                $.ajax({
+                    url: '',
+                    type: 'GET',
+                    data: {
+                        date: date,
+                        id: id,
+                        ajax: true
+                    },
+                    success: function (data) {
+                        var records = JSON.parse(data);
+                        var tableBody = '';
+                        if (records.length > 0) {
+                            records.forEach(function (record) {
+                                tableBody += '<tr>';
+                                tableBody += '<td>' + record.ID + '</td>';
+                                tableBody += '<td>' + record.FinancialStatus + '</td>';
+                                tableBody += '<td>' + record.ShippingName + '</td>';
+                                tableBody += '<td>' + record.ShippingAddress1 + '</td>';
+                                tableBody += '<td>' + record.ShippingCity + '</td>';
+                                tableBody += '<td>' + record.ShippingPhone + '</td>';
+                                tableBody += '<td>' + record.OutstandingBalance + '</td>';
+                                tableBody += '<td>' + record.Date + '</td>';
+                                tableBody += '</tr>';
+                            });
+                        } else {
+                            tableBody = '<tr><td colspan="8">No records found.</td></tr>';
+                        }
+                        $('.ImportRecordsTable tbody').html(tableBody);
+                    }
+                });
             }
         });
     </script>
@@ -176,13 +243,15 @@ $result = $conn->query($query);
 
             <!-- Content Container -->
             <div class="container">
-                <div>
-                    <label for="date-filter">Filter by Date:</label>
-                    <input type="date" id="date-filter" name="date-filter" value="<?php echo $date_filter; ?>">
-                </div>
-                <div>
-                    <label for="id-filter">Search by ID:</label>
-                    <input type="text" id="id-filter" name="id-filter" value="<?php echo $id_filter; ?>">
+                <div class="filter-container">
+                    <div>
+                        <label for="date-filter">Filter by Date:</label>
+                        <input type="date" id="date-filter" name="date-filter" value="<?php echo $date_filter; ?>">
+                    </div>
+                    <div>
+                        <label for="id-filter">Search by ID:</label>
+                        <input type="text" id="id-filter" name="id-filter" value="<?php echo $id_filter; ?>">
+                    </div>
                 </div>
                 <div>
                     <button id="view-all">View All Records</button>
