@@ -57,6 +57,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </li>
         <li>
           <a href="#">
+            <span class="icon"><i class="fas fa-border-all"></i></span>
+            <span class="title">Daily Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
             <span class="icon"><i class="fab fa-elementor"></i></span>
             <span class="title">Add Orders</span>
           </a>
@@ -67,12 +73,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <span class="title">Returned</span>
           </a>
         </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-border-all"></i></span>
-            <span class="title">Reports</span>
-          </a>
-        </li>
+
       </ul>
     </div>
   </div>
