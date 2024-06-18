@@ -19,6 +19,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
     .arrow {
       margin-left: 50px;
     }
+
+    .arrowReports {
+      margin-left: 40px;
+    }
   </style>
 </head>
 
@@ -57,11 +61,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </li>
 
         <li class="has-submenu">
-          <a href="#" <?php if ($current_page === 'ImportOrders.php' || $current_page === 'ViewAllRecords.php')
+          <a href="#" <?php if ($current_page === 'ReportDailyProcessing.php' || $current_page === 'ReportDeliveryPartner.php')
             echo 'class="active"'; ?>>
-            <span class="icon"><i class="fab fa-delicious"></i></span>
+            <span class="icon"><i class="fab fa-elementor"></i></span>
             <span class="title">Reports</span>
-            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+            <span class="arrowReports"><i class="fas fa-chevron-down"></i></span>
           </a>
           <ul class="submenu">
             <li><a href="ReportDailyProcessing.php">Daily Processing</a></li>
@@ -71,13 +75,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
         <li>
           <a href="#">
-            <span class="icon"><i class="fab fa-elementor"></i></span>
+            <span class="icon"><i class="fas fa-chart-pie"></i></span>
             <span class="title">Add Orders</span>
           </a>
         </li>
         <li>
           <a href="#">
-            <span class="icon"><i class="fas fa-chart-pie"></i></span>
+            <span class="icon"><i class="fas fa-border-all"></i></span>
             <span class="title">Returned</span>
           </a>
         </li>
