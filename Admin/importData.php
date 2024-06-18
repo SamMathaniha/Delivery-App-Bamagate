@@ -1,5 +1,5 @@
 <?php
-include "config.php";
+include "../config.php";
 
 if (isset($_POST["submit"])) {
     // Define allowed CSV MIME types
@@ -21,6 +21,7 @@ if (isset($_POST["submit"])) {
 
             // Get current timestamp
             $timestamp = time();
+            $duplicateCount = 0;
 
             while (($line = fgetcsv($csvFile)) !== false) {
                 $Name = $line[0];
@@ -52,17 +53,27 @@ if (isset($_POST["submit"])) {
                         $stmt = $conn->prepare($insertQuery);
                         $stmt->bind_param("sssssssi", $Name, $FinancialStatus, $ShippingName, $ShippingAddress1, $ShippingCity, $ShippingPhone, $OutstandingBalance, $timestamp);
                         $stmt->execute();
+                    } else {
+                        $duplicateCount++;
                     }
                 }
             }
             fclose($csvFile);
+
+            // Redirect to the Orders page with appropriate parameters
+            $redirectUrl = "ImportOrders.php?timestamp=$timestamp";
+            if ($duplicateCount > 0) {
+                $redirectUrl .= "&duplicates=$duplicateCount";
+            } else {
+                $redirectUrl .= "&success=true";
+            }
+            header("Location: $redirectUrl");
+            exit();
         }
     } else {
-        echo "Invalid File";
+        // Redirect to the Orders page with error parameter
+        header("Location: ImportOrders.php?error=invalid_file");
+        exit();
     }
-
-    // Redirect to the Orders page with timestamp
-    header("Location: Orders.php?timestamp=$timestamp");
-    exit();
 }
 ?>
