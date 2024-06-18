@@ -55,12 +55,20 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <li><a href="ViewAllRecords.php">View All Records</a></li>
           </ul>
         </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-border-all"></i></span>
-            <span class="title">Daily Reports</span>
+
+        <li class="has-submenu">
+          <a href="#" <?php if ($current_page === 'ImportOrders.php' || $current_page === 'ViewAllRecords.php')
+            echo 'class="active"'; ?>>
+            <span class="icon"><i class="fab fa-delicious"></i></span>
+            <span class="title">Reports</span>
+            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
           </a>
+          <ul class="submenu">
+            <li><a href="ReportDailyProcessing.php">Daily Processing</a></li>
+            <li><a href="ReportDeliveryPartner.php">Delivery Partner</a></li>
+          </ul>
         </li>
+
         <li>
           <a href="#">
             <span class="icon"><i class="fab fa-elementor"></i></span>

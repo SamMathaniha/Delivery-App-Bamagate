@@ -28,24 +28,9 @@ if (isset($_POST["submit"])) {
                 $FinancialStatus = $line[2];
                 $ShippingName = $line[34];
                 $ShippingAddress1 = $line[36];
-                $ShippingCity = ucfirst(strtolower($line[39])); // Capitalize first letter, lowercase the rest
+                $ShippingCity = trim($line[39]); // Trim spaces around ShippingCity
                 $ShippingPhone = $line[43];
                 $OutstandingBalance = $line[51];
-
-                // Determine DeliveryPartner based on ShippingCity
-                $deliveryPartner = 'Unknown';
-                switch ($ShippingCity) {
-                    case 'Colombo':
-                    case 'Negombo':
-                    case 'Gampaha':
-                        $deliveryPartner = 'Direct';
-                        break;
-                    case 'Jaffna':
-                    case 'Kandy':
-                    case 'Athurugiriya':
-                        $deliveryPartner = 'Courier';
-                        break;
-                }
 
                 // Check if all required fields are present
                 if (
@@ -53,6 +38,17 @@ if (isset($_POST["submit"])) {
                     !empty($ShippingAddress1) && !empty($ShippingCity) &&
                     !empty($ShippingPhone) && ($OutstandingBalance !== '')
                 ) {
+                    // Adjust ShippingCity to have the first letter capitalized
+                    $ShippingCity = ucwords(strtolower($ShippingCity));
+
+                    // Determine DeliveryPartner based on ShippingCity
+                    if (in_array($ShippingCity, ["Colombo", "Negombo", "Gampaha"])) {
+                        $DeliveryPartner = "Direct";
+                    } elseif (in_array($ShippingCity, ["Jaffna", "Kandy", "Athurugiriya"])) {
+                        $DeliveryPartner = "Courier";
+                    } else {
+                        $DeliveryPartner = "Unknown";
+                    }
 
                     // Check if ID already exists in the database
                     $checkQuery = "SELECT COUNT(*) as count FROM importrecords WHERE ID = ?";
@@ -63,10 +59,10 @@ if (isset($_POST["submit"])) {
                     $row = $result->fetch_assoc();
 
                     if ($row['count'] == 0) {
-                        // Insert record into database with DeliveryPartner and a timestamp
-                        $insertQuery = "INSERT INTO importrecords (ID, FinancialStatus, ShippingName, ShippingAddress1, ShippingCity, ShippingPhone, OutstandingBalance, DeliveryPartner, Timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        // Insert record into database with a timestamp
+                        $insertQuery = "INSERT INTO importrecords (ID, FinancialStatus, ShippingName, ShippingAddress1, ShippingCity, ShippingPhone, OutstandingBalance, Timestamp, DeliveryPartner) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt = $conn->prepare($insertQuery);
-                        $stmt->bind_param("ssssssssi", $Name, $FinancialStatus, $ShippingName, $ShippingAddress1, $ShippingCity, $ShippingPhone, $OutstandingBalance, $deliveryPartner, $timestamp);
+                        $stmt->bind_param("ssssssiss", $Name, $FinancialStatus, $ShippingName, $ShippingAddress1, $ShippingCity, $ShippingPhone, $OutstandingBalance, $timestamp, $DeliveryPartner);
                         $stmt->execute();
                     } else {
                         $duplicateCount++;
