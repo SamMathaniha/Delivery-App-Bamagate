@@ -111,6 +111,7 @@ $result = $stmt->get_result();
                 <th>Shipping City</th>
                 <th>Shipping Phone</th>
                 <th>Outstanding Balance</th>
+                <th>DeliveryPartner</th>
               </tr>
             </thead>
             <tbody>
@@ -125,6 +126,7 @@ $result = $stmt->get_result();
                   echo "<td>" . $row['ShippingCity'] . "</td>";
                   echo "<td>" . $row['ShippingPhone'] . "</td>";
                   echo "<td>" . $row['OutstandingBalance'] . "</td>";
+                  echo "<td>" . $row['DeliveryPartner'] . "</td>";
                   echo "</tr>";
                 }
               } else {

@@ -41,11 +41,16 @@ if (isset($_POST["submit"])) {
                     // Adjust ShippingCity to have the first letter capitalized
                     $ShippingCity = ucwords(strtolower($ShippingCity));
 
-                    // Determine DeliveryPartner based on ShippingCity
-                    if (in_array($ShippingCity, ["Colombo", "Negombo", "Gampaha"])) {
-                        $DeliveryPartner = "Direct";
-                    } elseif (in_array($ShippingCity, ["Jaffna", "Kandy", "Athurugiriya"])) {
-                        $DeliveryPartner = "Courier";
+                    // Determine DeliveryPartner based on ShippingCity from the database
+                    $deliveryPartnerQuery = "SELECT DeliveryPartner FROM shippingcity WHERE CityName = ?";
+                    $stmt = $conn->prepare($deliveryPartnerQuery);
+                    $stmt->bind_param("s", $ShippingCity);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $row = $result->fetch_assoc();
+
+                    if ($row) {
+                        $DeliveryPartner = $row['DeliveryPartner'];
                     } else {
                         $DeliveryPartner = "Unknown";
                     }
