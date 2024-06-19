@@ -109,21 +109,29 @@ function downloadAsCsv($records)
         $fp = fopen('php://output', 'w');
 
         // Write CSV headers
-        fputcsv($fp, array_keys($records[0]));
+        fputcsv($fp, ['ID', 'ShippingName', 'ShippingCity', 'ShippingPhone', 'OutstandingBalance', 'DeliveryPartner']);
 
         // Write CSV rows
         foreach ($records as $record) {
-            fputcsv($fp, $record);
+            fputcsv($fp, [
+                $record['ID'],
+                $record['ShippingName'],
+                $record['ShippingCity'],
+                $record['ShippingPhone'],
+                $record['OutstandingBalance'],
+                $record['DeliveryPartner']
+            ]);
         }
 
         // Close file pointer
         fclose($fp);
         exit;
     } else {
-        echo "No records found for the selected date.";
+        echo "<script>alert('No records found for the selected date.');</script>";
         exit;
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -136,8 +144,7 @@ function downloadAsCsv($records)
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <!-- SideBar-Menu CSS -->
-    <link rel="stylesheet" href="../css/styles.css">
+
     <!-- Other CSS -->
     <link rel="stylesheet" href="../css/Other.css">
 
@@ -150,7 +157,7 @@ function downloadAsCsv($records)
         }
 
         .recordsTable {
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
             margin-top: 20px;
             display: none;
@@ -234,6 +241,7 @@ function downloadAsCsv($records)
 
                 <!-- Side Bar -->
                 <?php include './Components/Sidebar.php' ?>
+
                 <div class="DatePicker">
                     <label for="date-filter">Pick a Date:</label>
                     <input type="date" id="date-filter" name="date-filter">
