@@ -23,7 +23,31 @@ $current_page = basename($_SERVER['PHP_SELF']);
     .arrowReports {
       margin-left: 40px;
     }
+
+    .wrapper.active .submenu {
+      display: none;
+    }
+
+    .wrapper.active .has-submenu:hover .submenu {
+      display: block;
+      position: absolute;
+      left: 60px;
+      top: 0;
+      background: #004D40;
+      padding: 0;
+      border: 1px solid #E0F2F1;
+      margin-top: 190px;
+    }
+
+    .wrapper.active .has-submenu:hover .submenu li a {
+      padding: 10px 30px;
+    }
+
+    .wrapper.active .arrowReports {
+      display: none;
+    }
   </style>
+
 </head>
 
 <body>

@@ -38,31 +38,41 @@ function fetchAllRecords()
     return $records;
 }
 
+// Handle request to download the daily processing report
+if (isset($_GET['download']) && isset($_GET['date'])) {
+    $date = $_GET['date'];
+
+    // Fetch records based on date
+    $records = fetchRecordsByDate($date);
+
+    // Download as CSV format
+    downloadAsCsv($records);
+}
+
 // Handle AJAX request to fetch records
 if (isset($_GET['date'])) {
     $date = $_GET['date'];
     $records = fetchRecordsByDate($date);
     echo json_encode($records);
-    exit;
+    exit();
 }
 
-// Handle AJAX request to update ShippingCity and DeliveryPartner
+// Handle AJAX request to update shipping city
 if (isset($_POST['id']) && isset($_POST['shippingCity'])) {
     $id = $_POST['id'];
-    $shippingCity = trim(ucwords(strtolower($_POST['shippingCity'])));
+    $shippingCity = $_POST['shippingCity'];
 
-    // Determine the DeliveryPartner based on the new ShippingCity
-    $query = "SELECT DeliveryPartner FROM shippingcity WHERE CityName = ?";
+    // Update the shipping city in the database
+    $query = "UPDATE importrecords SET ShippingCity = ? WHERE ID = ?";
     $stmt = $conn->prepare($query);
-    if ($stmt === false) {
-        echo json_encode(['success' => false]);
-        exit;
-    }
+    $stmt->bind_param("ss", $shippingCity, $id);
+    $stmt->execute();
+
+    // Determine the new delivery partner based on updated shipping city
+    $deliveryPartnerQuery = "SELECT DeliveryPartner FROM shippingcity WHERE CityName = ?";
+    $stmt = $conn->prepare($deliveryPartnerQuery);
     $stmt->bind_param("s", $shippingCity);
-    if (!$stmt->execute()) {
-        echo json_encode(['success' => false]);
-        exit;
-    }
+    $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
@@ -72,35 +82,14 @@ if (isset($_POST['id']) && isset($_POST['shippingCity'])) {
         $deliveryPartner = "Unknown";
     }
 
-    $updateQuery = "UPDATE importrecords SET ShippingCity = ?, DeliveryPartner = ? WHERE ID = ?";
-    $stmt = $conn->prepare($updateQuery);
-    if ($stmt === false) {
-        echo json_encode(['success' => false]);
-        exit;
-    }
-    $stmt->bind_param("sss", $shippingCity, $deliveryPartner, $id);
-    if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'shippingCity' => $shippingCity, 'deliveryPartner' => $deliveryPartner]);
-    } else {
-        echo json_encode(['success' => false]);
-    }
-    exit;
-}
+    // Update the delivery partner in the database
+    $updateDeliveryPartnerQuery = "UPDATE importrecords SET DeliveryPartner = ? WHERE ID = ?";
+    $stmt = $conn->prepare($updateDeliveryPartnerQuery);
+    $stmt->bind_param("ss", $deliveryPartner, $id);
+    $stmt->execute();
 
-// Handle request to download the daily processing report
-if (isset($_GET['download']) && isset($_GET['date'])) {
-    $date = $_GET['date'];
-
-    // Fetch records based on date
-    $records = fetchRecordsByDate($date);
-
-    if (isset($_GET['format']) && $_GET['format'] === 'xlsx') {
-        // Download as XLSX (Excel) format
-        downloadAsXlsx($records);
-    } else {
-        // Download as CSV format (default)
-        downloadAsCsv($records);
-    }
+    echo json_encode(['success' => true, 'shippingCity' => $shippingCity, 'deliveryPartner' => $deliveryPartner]);
+    exit();
 }
 
 // Function to download as CSV
@@ -112,6 +101,9 @@ function downloadAsCsv($records)
         // Send headers to force download
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment;filename=' . $filename);
+        header('Cache-Control: max-age=0');
+        header('Expires: 0');
+        header('Pragma: public');
 
         // Open a file pointer connected to php://output
         $fp = fopen('php://output', 'w');
@@ -132,54 +124,7 @@ function downloadAsCsv($records)
         exit;
     }
 }
-
-// Function to download as XLSX (Excel) format
-function downloadAsXlsx($records)
-{
-    if (count($records) > 0) {
-        // Define the filename
-        $filename = "DailyProcessingReport_" . date("Y-m-d") . ".xlsx";
-
-        // Set headers for download
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename=' . $filename);
-        header('Cache-Control: max-age=0');
-
-        // Start writing the XLSX content
-        $output = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
-        $output .= '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>';
-        $output .= '<body>';
-        $output .= '<table>';
-
-        // Write headers row
-        $output .= '<tr>';
-        foreach (array_keys($records[0]) as $header) {
-            $output .= '<th>' . htmlspecialchars($header) . '</th>';
-        }
-        $output .= '</tr>';
-
-        // Write data rows
-        foreach ($records as $record) {
-            $output .= '<tr>';
-            foreach ($record as $value) {
-                $output .= '<td>' . htmlspecialchars($value) . '</td>';
-            }
-            $output .= '</tr>';
-        }
-
-        $output .= '</table>';
-        $output .= '</body></html>';
-
-        // Output the content
-        echo $output;
-        exit;
-    } else {
-        echo "No records found for the selected date.";
-        exit;
-    }
-}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -235,6 +180,11 @@ function downloadAsXlsx($records)
             margin: -2px;
         }
 
+        .DatePicker {
+            margin-left: 250px;
+
+        }
+
         .download-button {
             display: inline-block;
             padding: 10px 20px;
@@ -243,7 +193,8 @@ function downloadAsXlsx($records)
             text-align: center;
             border-radius: 4px;
             cursor: pointer;
-            margin-left: 20px;
+            margin-right: 250px;
+            float: right;
         }
     </style>
 </head>
@@ -283,7 +234,7 @@ function downloadAsXlsx($records)
 
                 <!-- Side Bar -->
                 <?php include './Components/Sidebar.php' ?>
-                <div>
+                <div class="DatePicker">
                     <label for="date-filter">Pick a Date:</label>
                     <input type="date" id="date-filter" name="date-filter">
                     <div id="download-report" class="download-button">Download Daily Processing Report</div>
@@ -343,7 +294,7 @@ function downloadAsXlsx($records)
                                     tableBody += '<td>' + record.ShippingName + '</td>';
                                     tableBody += '<td>' + record.ShippingAddress1 + '</td>';
                                     tableBody += '<td>';
-                                    if (record.DeliveryPartner === "Unknown") {
+                                    if (record.DeliveryPartner.trim() === 'Unknown') {
                                         tableBody += '<span class="editable" contenteditable="true" data-id="' + record.ID + '">' + record.ShippingCity.trim() + '</span>';
                                         tableBody += ' <i class="fas fa-edit edit-icon" data-id="' + record.ID + '"></i>';
                                     } else {
@@ -405,7 +356,7 @@ function downloadAsXlsx($records)
             $('#download-report').on('click', function () {
                 var selectedDate = $('#date-filter').val();
                 if (selectedDate) {
-                    window.location.href = '?download=true&date=' + selectedDate + '&format=xlsx'; // Specify format
+                    window.location.href = '?download=true&date=' + selectedDate; // Download as CSV format
                 } else {
                     alert('Please select a date to download the report.');
                 }
