@@ -30,6 +30,12 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
     // Fetch records
     $records = fetchRecordsByDateAndPartner($date, $deliveryPartner);
 
+    // If no records found, display alert and exit
+    if (empty($records)) {
+        echo "<script>alert('Empty Records');</script>";
+        exit();
+    }
+
     // Create CSV content
     $csvFileName = 'delivery_records_' . date('Y-m-d') . '.csv';
     $output = fopen('php://output', 'w');

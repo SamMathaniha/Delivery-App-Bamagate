@@ -98,11 +98,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </li>
 
         <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-chart-pie"></i></span>
-            <span class="title">Add Orders</span>
+          <a href="ManageCities.php">
+            <span class="icon"><i class="fas fa-globe"></i></span>
+            <span class="title">Manage Cities</span>
           </a>
         </li>
+
         <li>
           <a href="#">
             <span class="icon"><i class="fas fa-border-all"></i></span>

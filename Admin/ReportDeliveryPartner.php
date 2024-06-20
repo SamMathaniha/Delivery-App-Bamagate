@@ -101,6 +101,19 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
         .DatePicker label {
             margin-right: 10px;
         }
+
+        .download-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 250px;
+            margin-right: 100px;
+            float: right;
+        }
     </style>
     <script>
         $(document).ready(function () {
@@ -217,6 +230,8 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
                         <option value="Courier">Courier</option>
                         <option value="Direct">Direct</option>
                     </select>
+                    <!-- Download Records Button -->
+                    <button id="download-records" class="download-button">Download Records</button>
                 </div>
 
                 <!-- Records Table -->
@@ -241,8 +256,7 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
                     </table>
                 </div>
 
-                <!-- Download Records Button -->
-                <button id="download-records" class="download-button">Download Records</button>
+
 
             </div>
         </div>
