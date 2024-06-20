@@ -23,9 +23,10 @@ function fetchRecordsByDateAndPartner($date, $deliveryPartner)
 }
 
 // Handle download request
-if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
+if (isset($_GET['date']) && isset($_GET['deliveryPartner']) && isset($_GET['lastWaybillId'])) {
     $date = $_GET['date'];
     $deliveryPartner = $_GET['deliveryPartner'];
+    $lastWaybillId = intval($_GET['lastWaybillId']); // Ensure it's an integer
 
     // Fetch records
     $records = fetchRecordsByDateAndPartner($date, $deliveryPartner);
@@ -45,11 +46,12 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
     header('Content-Disposition: attachment; filename=' . $csvFileName);
 
     // Write headers
-    fputcsv($output, array('ID', 'Financial Status', 'Shipping Name', 'Shipping Address', 'Shipping City', 'Shipping Phone', 'Outstanding Balance', 'Date', 'Delivery Partner'));
+    fputcsv($output, array('Waybill ID', 'ID', 'Financial Status', 'Shipping Name', 'Shipping Address', 'Shipping City', 'Shipping Phone', 'Outstanding Balance', 'Date', 'Delivery Partner'));
 
     // Write records
     foreach ($records as $record) {
         fputcsv($output, array(
+            $lastWaybillId++, // Incrementing Waybill ID
             $record['ID'],
             $record['FinancialStatus'],
             $record['ShippingName'],

@@ -102,6 +102,16 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
             margin-right: 10px;
         }
 
+        #last-waybill-id {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+            width: 250px;
+            margin-left: 20px;
+            text-align: center;
+        }
+
         .download-button {
             display: inline-block;
             padding: 10px 20px;
@@ -175,12 +185,16 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
             function downloadRecords() {
                 var selectedDate = $('#date-filter').val();
                 var deliveryPartner = $('#delivery-partner').val();
+                var lastWaybillId = $('#last-waybill-id').val();
 
-                if (selectedDate && deliveryPartner) {
-                    window.location.href = 'download_records.php?date=' + selectedDate + '&deliveryPartner=' + deliveryPartner;
+                if (selectedDate && deliveryPartner && lastWaybillId) {
+                    window.location.href = 'download_records.php?date=' + selectedDate + '&deliveryPartner=' + deliveryPartner + '&lastWaybillId=' + lastWaybillId;
+                } else {
+                    alert('Please enter all required fields.');
                 }
             }
         });
+
     </script>
 
 </head>
@@ -230,9 +244,10 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
                         <option value="Courier">Courier</option>
                         <option value="Direct">Direct</option>
                     </select>
-                    <!-- Download Records Button -->
+                    <input type="text" id="last-waybill-id" name="last-waybill-id" placeholder="Enter last waybill ID">
                     <button id="download-records" class="download-button">Download Records</button>
                 </div>
+
 
                 <!-- Records Table -->
                 <div class="recordsTable">
