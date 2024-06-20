@@ -5,7 +5,10 @@ include "../config.php";
 function fetchRecordsByDateAndPartner($date, $deliveryPartner)
 {
     global $conn;
-    $query = "SELECT * FROM importrecords WHERE DATE(Date) = ? AND DeliveryPartner = ?";
+    $query = "SELECT ir.*, sc.DistrictName 
+              FROM importrecords ir
+              LEFT JOIN shippingcity sc ON ir.ShippingCity = sc.CityName
+              WHERE DATE(ir.Date) = ? AND ir.DeliveryPartner = ?";
     $stmt = $conn->prepare($query);
     if ($stmt === false) {
         return [];
@@ -46,22 +49,23 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner']) && isset($_GET['last
     header('Content-Disposition: attachment; filename=' . $csvFileName);
 
     // Write headers
-    fputcsv($output, array('Waybill ID', 'ID', 'Financial Status', 'Shipping Name', 'Shipping Address', 'Shipping City', 'Shipping Phone', 'Outstanding Balance', 'Date', 'Delivery Partner'));
+    fputcsv($output, array('Waybill ID', 'Order Number', 'Receiver Name', 'Delivery Address', 'District Name', 'City', 'Receiver Phone', 'COD'));
 
     // Write records
     foreach ($records as $record) {
-        fputcsv($output, array(
-            $lastWaybillId++, // Incrementing Waybill ID
-            $record['ID'],
-            $record['FinancialStatus'],
-            $record['ShippingName'],
-            $record['ShippingAddress1'],
-            $record['ShippingCity'],
-            $record['ShippingPhone'],
-            $record['OutstandingBalance'],
-            $record['Date'],
-            $record['DeliveryPartner']
-        )
+        fputcsv(
+            $output,
+            array(
+                $lastWaybillId++, // Incrementing Waybill ID
+                $record['ID'],
+                $record['ShippingName'],
+                $record['ShippingAddress1'],
+                $record['DistrictName'],
+                $record['ShippingCity'],
+                $record['ShippingPhone'],
+                $record['OutstandingBalance'],
+                // Adding District Name
+            )
         );
     }
 

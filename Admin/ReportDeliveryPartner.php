@@ -5,7 +5,10 @@ include "../config.php";
 function fetchRecordsByDateAndPartner($date, $deliveryPartner)
 {
     global $conn;
-    $query = "SELECT * FROM importrecords WHERE DATE(Date) = ? AND DeliveryPartner = ?";
+    $query = "SELECT ir.*, sc.DistrictName 
+              FROM importrecords ir
+              LEFT JOIN shippingcity sc ON ir.ShippingCity = sc.CityName
+              WHERE DATE(ir.Date) = ? AND ir.DeliveryPartner = ?";
     $stmt = $conn->prepare($query);
     if ($stmt === false) {
         return [];
@@ -170,10 +173,11 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
                                     tableBody += '<td>' + record.OutstandingBalance + '</td>';
                                     tableBody += '<td>' + record.Date + '</td>';
                                     tableBody += '<td>' + record.DeliveryPartner + '</td>';
+                                    tableBody += '<td>' + record.DistrictName + '</td>';
                                     tableBody += '</tr>';
                                 });
                             } else {
-                                tableBody = '<tr><td colspan="9">No records found.</td></tr>';
+                                tableBody = '<tr><td colspan="10">No records found.</td></tr>';
                             }
                             $('.recordsTable tbody').html(tableBody);
                             $('.recordsTable').show();
@@ -263,6 +267,7 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
                                 <th>Outstanding Balance</th>
                                 <th>Date</th>
                                 <th>Delivery Partner</th>
+                                <th>District Name</th>
                             </tr>
                         </thead>
                         <tbody>
