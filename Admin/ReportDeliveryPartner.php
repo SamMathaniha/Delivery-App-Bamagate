@@ -248,7 +248,7 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
                         <option value="Courier">Courier</option>
                         <option value="Direct">Direct</option>
                     </select>
-                    <input type="text" id="last-waybill-id" name="last-waybill-id" placeholder="Enter last waybill ID">
+                    <input type="text" id="last-waybill-id" name="last-waybill-id" placeholder="Enter waybill First ID">
                     <button id="download-records" class="download-button">Download Records</button>
                 </div>
 

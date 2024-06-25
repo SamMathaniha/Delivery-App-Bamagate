@@ -111,6 +111,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
           </a>
         </li>
 
+        <li>
+          <a href="#">
+            <span class="icon"><i class="fas fa-users"></i></span>
+            <span class="title">System Users</span>
+          </a>
+        </li>
+
       </ul>
     </div>
   </div>
