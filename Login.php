@@ -27,11 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             case 'Admin':
                header('Location: ./Admin/index.php');
                break;
-            case 'Data Management Team':
-               header('Location: DataManagementTeamDash.php');
+            case 'Data Management':
+               header('Location: ./DataManagementTeam/DataManagementTeamIndex.php');
                break;
             case 'Delivery Team':
-               header('Location: DeliveryTeamDash.php');
+               header('Location: ./DeliveryTeam/DeliveryTeamIndex.php');
                break;
             default:
                $error_message = 'Invalid user type';
@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       .error-message {
          color: red;
          margin-top: 10px;
+         text-align: center;
       }
    </style>
 </head>
@@ -76,14 +77,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="password" class="text" name="password" required>
             <span>password</span>
             <br><br>
+            <?php if (isset($error_message)) { ?>
+               <p class="error-message"><?php echo $error_message; ?></p>
+            <?php } ?>
             <button type="submit" class="signin">Sign In</button>
             <hr>
             <div class="CompanyLogo">
                <img src="./img/BamagateLogo.png" alt="Bamagate Logo">
             </div>
-            <?php if (isset($error_message)) { ?>
-               <p class="error-message"><?php echo $error_message; ?></p>
-            <?php } ?>
+
          </form>
       </div>
    </main>

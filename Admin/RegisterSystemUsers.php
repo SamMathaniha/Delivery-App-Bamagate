@@ -156,7 +156,7 @@ function isValidPhoneNumber($phoneNo)
                                 <select id="userType" name="userType" required>
                                     <option value="" disabled selected>Select User Type</option>
                                     <option value="Admin">Admin</option>
-                                    <option value="Data Management Team">Data Management Team</option>
+                                    <option value="Data Management">Data Management Team</option>
                                     <option value="Delivery Team">Delivery Team</option>
                                 </select>
                             </div>
