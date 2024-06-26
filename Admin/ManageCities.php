@@ -327,12 +327,7 @@ if (isset($_POST['search'])) {
                             <div class="profile_dd">
                                 <div class="dd_item">Profile</div>
                                 <div class="dd_item">Change Password</div>
-                                <div class="dd_item">
-                                    <form method="post" action="../logout.php">
-                                        <button type="submit" name="logout"
-                                            style="background: none; border: none; color: inherit; cursor: pointer;">Logout</button>
-                                    </form>
-                                </div>
+                                <div class="dd_item">Logout</div>
                             </div>
                         </li>
                     </ul>

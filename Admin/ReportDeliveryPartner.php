@@ -53,6 +53,9 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!-- SweetAlert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/sweetalert/dist/sweetalert.css">
     <!-- SideBar-Menu CSS -->
     <link rel="stylesheet" href="../css/styles.css">
     <!-- Other CSS -->
@@ -160,7 +163,7 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
 
                 if (selectedDate && deliveryPartner) {
                     $.ajax({
-                        url: 'ReportDeliveryPartner.php', // Adjust the URL if needed
+                        url: 'ReportDeliveryPartner.php',
                         type: 'GET',
                         data: {
                             date: selectedDate,
@@ -202,7 +205,7 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
                 if (selectedDate && deliveryPartner && lastWaybillId) {
                     window.location.href = 'download_records.php?date=' + selectedDate + '&deliveryPartner=' + deliveryPartner + '&lastWaybillId=' + lastWaybillId;
                 } else {
-                    alert('Please enter all required fields.');
+                    swal('Error', 'Please enter all required fields.', 'error');
                 }
             }
         });
@@ -254,7 +257,7 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
 
                 <!-- Date Picker and Delivery Partner Selection -->
                 <div class="DatePicker">
-                    <label for="date-filter">Pick a Date:</label>
+
                     <input type="date" id="date-filter" name="date-filter">
                     <select id="delivery-partner" name="delivery-partner">
                         <option value="">Select Delivery Partner</option>

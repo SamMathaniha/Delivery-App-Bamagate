@@ -135,7 +135,7 @@ function downloadAsCsv($records)
         fclose($fp);
         exit;
     } else {
-        echo "<script>alert('No records found for the selected date.');</script>";
+        echo "<script>swal('No records found', 'No records found for the selected date.', 'warning');</script>";
         exit;
     }
 }
@@ -152,6 +152,10 @@ function downloadAsCsv($records)
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <!-- SweetAlert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/sweetalert/dist/sweetalert.css">
 
     <!-- Other CSS -->
     <link rel="stylesheet" href="../css/Other.css">
@@ -197,7 +201,6 @@ function downloadAsCsv($records)
 
         .DatePicker {
             margin-left: 250px;
-
         }
 
         .download-button {
@@ -359,7 +362,7 @@ function downloadAsCsv($records)
                     success: function (response) {
                         var result = JSON.parse(response);
                         if (result.success) {
-                            alert('Shipping City and Delivery Partner updated successfully.');
+                            swal('Success', 'Shipping City and Delivery Partner updated successfully.', 'success');
                             $('.editable[data-id="' + id + '"]').text(result.shippingCity);
                             $('.recordsTable tbody').find('tr').each(function () {
                                 if ($(this).find('td:first').text() === id) {
@@ -367,7 +370,7 @@ function downloadAsCsv($records)
                                 }
                             });
                         } else {
-                            alert('Failed to update Shipping City.');
+                            swal('Error', 'Failed to update Shipping City.', 'error');
                         }
                     }
                 });
@@ -379,7 +382,7 @@ function downloadAsCsv($records)
                 if (selectedDate) {
                     window.location.href = '?download=true&date=' + selectedDate; // Download as CSV format
                 } else {
-                    alert('Please select a date to download the report.');
+                    swal('Warning', 'Please select a date to download the report.', 'warning');
                 }
             });
 

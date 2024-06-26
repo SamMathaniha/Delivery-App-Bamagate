@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 // Check if the user is logged in
@@ -31,6 +30,10 @@ $result = $stmt->get_result();
   <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <!-- SweetAlert -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/sweetalert/dist/sweetalert.css">
+
   <!-- SideBar-Menu CSS -->
   <link rel="stylesheet" href="../css/styles.css">
 
@@ -51,17 +54,31 @@ $result = $stmt->get_result();
       const urlParams = new URLSearchParams(window.location.search);
       const success = urlParams.get('success');
       if (success) {
-        alert('New records Added Successfully ');
+        swal({
+          title: 'New records Added Successfully',
+          text: 'Added To Database...',
+          icon: 'success',
+          timer: 2000,
+          buttons: false
+        });
       }
 
       const duplicates = urlParams.get('duplicates');
       if (duplicates) {
-        alert(`Same Record Found. Total Rejected Records: ${duplicates}`);
+        swal({
+          title: 'Same Record Found',
+          text: `Total Rejected Records: ${duplicates}`,
+          icon: 'warning'
+        });
       }
 
       const error = urlParams.get('error');
       if (error === 'invalid_file') {
-        alert('Invalid File !!!');
+        swal({
+          title: 'Invalid File !!!',
+          text: 'Please upload a valid file.',
+          icon: 'error'
+        });
       }
     });
   </script>
