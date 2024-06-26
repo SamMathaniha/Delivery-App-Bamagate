@@ -1,6 +1,14 @@
 <?php
 include "../config.php";
 
+session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION['username'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
 // Function to fetch records based on date
 function fetchRecordsByDate($date)
 {
@@ -227,7 +235,12 @@ function downloadAsCsv($records)
                             <div class="profile_dd">
                                 <div class="dd_item">Profile</div>
                                 <div class="dd_item">Change Password</div>
-                                <div class="dd_item">Logout</div>
+                                <div class="dd_item">
+                                    <form method="post" action="../logout.php">
+                                        <button type="submit" name="logout"
+                                            style="background: none; border: none; color: inherit; cursor: pointer;">Logout</button>
+                                    </form>
+                                </div>
                             </div>
                         </li>
                     </ul>

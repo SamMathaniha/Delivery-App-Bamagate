@@ -60,8 +60,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </div>
         <div class="profile_info">
           <p>Welcome</p>
-          <p class="profile_name">User's Name</p>
+          <p class="profile_name"><?php echo htmlspecialchars($_SESSION['username']); ?></p>
         </div>
+
       </div>
       <ul>
         <li>
