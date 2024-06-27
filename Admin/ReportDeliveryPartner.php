@@ -203,11 +203,30 @@ if (isset($_GET['date']) && isset($_GET['deliveryPartner'])) {
                 var lastWaybillId = $('#last-waybill-id').val();
 
                 if (selectedDate && deliveryPartner && lastWaybillId) {
-                    window.location.href = 'download_records.php?date=' + selectedDate + '&deliveryPartner=' + deliveryPartner + '&lastWaybillId=' + lastWaybillId;
+                    // Check if there are records to download
+                    $.ajax({
+                        url: 'ReportDeliveryPartner.php',
+                        type: 'GET',
+                        data: {
+                            date: selectedDate,
+                            deliveryPartner: deliveryPartner
+                        },
+                        success: function (data) {
+                            var records = JSON.parse(data);
+                            if (records.length > 0) {
+                                // If records are found, initiate download
+                                window.location.href = 'download_records.php?date=' + selectedDate + '&deliveryPartner=' + deliveryPartner + '&lastWaybillId=' + lastWaybillId;
+                            } else {
+                                // If no records found, disable download button
+                                swal('Error', 'No records found to download.', 'error');
+                            }
+                        }
+                    });
                 } else {
                     swal('Error', 'Please enter all required fields.', 'error');
                 }
             }
+
         });
 
     </script>
