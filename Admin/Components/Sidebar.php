@@ -106,13 +106,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </li>
 
         <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-border-all"></i></span>
-            <span class="title">Returned</span>
-          </a>
-        </li>
-
-        <li>
           <a href="RegisterSystemUsers.php" <?php if ($current_page === 'RegisterSystemUsers.php')
             echo 'class="active"'; ?>>
             <span class="icon"><i class="fas fa-users"></i></span>
