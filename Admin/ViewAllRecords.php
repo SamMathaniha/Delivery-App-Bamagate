@@ -118,19 +118,40 @@ if (isset($_GET['ajax'])) {
             background-color: #45a049;
         }
 
-        .pagination {
+        .pagination-container {
             margin-top: 20px;
-            text-align: center;
+            display: flex;
+            justify-content: flex-start;
+            /* Align items to the left */
+            overflow-x: auto;
+            /* Enable horizontal scrolling */
+            white-space: nowrap;
+            /* Prevent wrapping */
+            padding: 10px 0;
+            /* Add some padding for aesthetics */
+        }
+
+        .pagination-container::-webkit-scrollbar {
+            height: 6px;
+            /* Custom scrollbar height */
+        }
+
+        .pagination-container::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 10px;
         }
 
         .pagination button {
             background-color: #f2f2f2;
             border: 1px solid #ddd;
             color: black;
-            padding: 8px 16px;
+            padding: 6px 4px;
             text-decoration: none;
             transition: background-color 0.3s;
-            margin: 0 4px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 0 2px;
+            /* Adjust margin for spacing */
         }
 
         .pagination button.active {
@@ -142,6 +163,8 @@ if (isset($_GET['ajax'])) {
         .pagination button:hover:not(.active) {
             background-color: #ddd;
         }
+
+
 
         .ImportRecordsTable {
             max-height: 400px;
@@ -293,15 +316,18 @@ if (isset($_GET['ajax'])) {
                     echo "<p>No records found.</p>";
                 }
                 ?>
-                <div class="pagination">
-                    <?php
-                    if (!$date_filter && !isset($_GET['view_all'])) {
-                        for ($i = 1; $i <= $total_pages; $i++) {
-                            echo "<button onclick='location.href=\"?page=$i\";' " . ($i == $page ? "class='active'" : "") . ">$i</button>";
+                <div class="pagination-container">
+                    <div class="pagination">
+                        <?php
+                        if (!$date_filter && !isset($_GET['view_all'])) {
+                            for ($i = 1; $i <= $total_pages; $i++) {
+                                echo "<button onclick='location.href=\"?page=$i\";' " . ($i == $page ? "class='active'" : "") . ">$i</button>";
+                            }
                         }
-                    }
-                    ?>
+                        ?>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
