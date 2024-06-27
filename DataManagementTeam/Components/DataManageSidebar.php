@@ -72,32 +72,20 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <span class="title">Dashboard</span>
           </a>
         </li>
-        <li class="has-submenu">
-          <a href="#" <?php if ($current_page === 'ImportOrders.php' || $current_page === 'ViewAllRecords.php')
-            echo 'class="active"'; ?>>
-            <span class="icon"><i class="fab fa-delicious"></i></span>
-            <span class="title">Orders</span>
-            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+
+        <li>
+          <a href="ImportOrders.php">
+            <span class="icon"><i class="fa fa-upload"></i></span>
+            <span class="title">Import Orders</span>
           </a>
-          <ul class="submenu">
-            <li><a href="ImportOrders.php">Import Orders</a></li>
-            <li><a href="ViewAllRecords.php">View All Records</a></li>
-          </ul>
         </li>
 
-        <li class="has-submenu">
-          <a href="#" <?php if ($current_page === 'ReportDailyProcessing.php' || $current_page === 'ReportDeliveryPartner.php')
-            echo 'class="active"'; ?>>
-            <span class="icon"><i class="fab fa-elementor"></i></span>
-            <span class="title">Reports</span>
-            <span class="arrowReports"><i class="fas fa-chevron-down"></i></span>
+        <li>
+          <a href="ViewAllRecords.php">
+            <span class="icon"><i class="fa fa-tasks"></i></span>
+            <span class="title">All Records</span>
           </a>
-          <ul class="submenu">
-            <li><a href="ReportDailyProcessing.php">Daily Processing</a></li>
-            <li><a href="ReportDeliveryPartner.php">Delivery Partner</a></li>
-          </ul>
         </li>
-
         <li>
           <a href="ManageCities.php">
             <span class="icon"><i class="fas fa-globe"></i></span>
@@ -105,20 +93,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
           </a>
         </li>
 
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-border-all"></i></span>
-            <span class="title">Returned</span>
-          </a>
-        </li>
 
-        <li>
-          <a href="RegisterSystemUsers.php" <?php if ($current_page === 'RegisterSystemUsers.php')
-            echo 'class="active"'; ?>>
-            <span class="icon"><i class="fas fa-users"></i></span>
-            <span class="title">System Users</span>
-          </a>
-        </li>
 
       </ul>
     </div>
