@@ -9,6 +9,13 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
+// Check for the no_records session variable and set a JavaScript variable if it exists
+$noRecords = false;
+if (isset($_SESSION['no_records']) && $_SESSION['no_records']) {
+    $noRecords = true;
+    unset($_SESSION['no_records']);
+}
+
 // Function to fetch records based on date
 function fetchRecordsByDate($date)
 {
@@ -92,7 +99,6 @@ if (isset($_POST['id']) && isset($_POST['shippingCity'])) {
 
     // Update the delivery partner in the database
     $updateDeliveryPartnerQuery = "UPDATE importrecords SET DeliveryPartner = ? WHERE ID = ?";
-    $stmt = $conn->prepare($updateDeliveryPartnerQuery);
     $stmt->bind_param("ss", $deliveryPartner, $id);
     $stmt->execute();
 
@@ -135,7 +141,9 @@ function downloadAsCsv($records)
         fclose($fp);
         exit;
     } else {
-        echo "<script>swal('No records found', 'No records found for the selected date.', 'warning');</script>";
+        // Set session variable and redirect back to the page
+        $_SESSION['no_records'] = true;
+        header('Location: ' . $_SERVER['PHP_SELF']);
         exit;
     }
 }
@@ -385,6 +393,11 @@ function downloadAsCsv($records)
                     swal('Warning', 'Please select a date to download the report.', 'warning');
                 }
             });
+
+            // Display SweetAlert if there are no records to download
+            <?php if ($noRecords): ?>
+                swal('No records found', 'No records found for the selected date.', 'warning');
+            <?php endif; ?>
 
         });
     </script>
