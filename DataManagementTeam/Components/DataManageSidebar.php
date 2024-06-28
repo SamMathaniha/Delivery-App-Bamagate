@@ -66,7 +66,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
       </div>
       <ul>
         <li>
-          <a href="index.php" <?php if ($current_page === 'index.php')
+          <a href="DataManagementTeamIndex.php" <?php if ($current_page === 'DataManagementTeamIndex.php')
             echo 'class="active"'; ?>>
             <span class="icon"><i class="fas fa-dice-d6"></i></span>
             <span class="title">Dashboard</span>
@@ -74,7 +74,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </li>
 
         <li>
-          <a href="ImportOrders.php">
+          <a href="ImportRecords.php" <?php if ($current_page === 'ImportRecords.php')
+            echo 'class="active"'; ?>>
             <span class="icon"><i class="fa fa-upload"></i></span>
             <span class="title">Import Orders</span>
           </a>

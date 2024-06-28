@@ -1,3 +1,9 @@
+.LogoStyle{
+  width: 100px; /* Set the desired width */
+  height: auto; /* Maintain aspect ratio */
+}
+
+
 .form-container {
   max-width: 500px;
   margin: 50px auto;
@@ -6,6 +12,8 @@
   border-radius: 10px;
   background-color: #f9f9f9;
 }
+
+
 
 .form-container h2 {
   text-align: center;

@@ -1,0 +1,90 @@
+.LogoStyle{
+    width: 100px; /* Set the desired width */
+    height: auto; /* Maintain aspect ratio */
+}
+
+ /* Styles for ImportForm */
+ .ImportForm {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  .ImportForm input[type="file"],
+  .ImportForm input[type="submit"] {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .ImportForm input[type="file"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .ImportForm input[type="submit"] {
+    padding: 10px;
+    background-color: #000931;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .ImportForm input[type="submit"]:hover {
+    background-color: #0eb10e;
+  }
+
+  /* Styles for ImportRecordsTable */
+  .ImportRecordsTable {
+    width: 100%;
+    max-width: 1500px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow-x: auto;
+    /* Ensures table is responsive */
+  }
+
+  .ImportRecordsTable table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .ImportRecordsTable th,
+  .ImportRecordsTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+
+  .ImportRecordsTable th {
+    background-color: #000931;
+    color: white;
+  }
+
+  .ImportRecordsTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  /* Responsive styling */
+  @media (max-width: 768px) {
+
+    .ImportForm,
+    .ImportRecordsTable {
+      width: 90%;
+      padding: 10px;
+    }
+
+    .ImportRecordsTable table {
+      font-size: 14px;
+    }
+  }
+

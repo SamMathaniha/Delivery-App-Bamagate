@@ -84,6 +84,9 @@ function isValidPhoneNumber($phoneNo)
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
     <!--  CSS -->
+    <link rel="stylesheet" href="../css/Other.css">
+
+    <!--  CSS -->
     <link rel="stylesheet" href="../css/AdminRegisterStyle.css">
 
 </head>
