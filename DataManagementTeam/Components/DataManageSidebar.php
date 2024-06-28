@@ -88,6 +88,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <span class="title">All Records</span>
           </a>
         </li>
+
+        <li>
+          <a href="UnknownCity.php" <?php if ($current_page === 'UnknownCity.php')
+            echo 'class="active"'; ?>>
+            <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+            <span class="title">Unknown City</span>
+          </a>
+        </li>
+
         <li>
           <a href="ManageCities.php" <?php if ($current_page === 'ManageCities.php')
             echo 'class="active"'; ?>>
