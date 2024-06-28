@@ -76,13 +76,12 @@ function isValidPhoneNumber($phoneNo)
 <head>
     <meta charset="UTF-8">
     <title>Bamagate Delivery App</title>
+
     <link rel="stylesheet" href="../css/styles.css">
+
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-
-    <!-- Other CSS -->
-    <link rel="stylesheet" href="../css/Other.css">
 
     <!--  CSS -->
     <link rel="stylesheet" href="../css/AdminRegisterStyle.css">

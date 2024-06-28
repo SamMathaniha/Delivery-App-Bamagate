@@ -99,6 +99,7 @@ if (isset($_POST['id']) && isset($_POST['shippingCity'])) {
 
     // Update the delivery partner in the database
     $updateDeliveryPartnerQuery = "UPDATE importrecords SET DeliveryPartner = ? WHERE ID = ?";
+    $stmt = $conn->prepare($updateDeliveryPartnerQuery);
     $stmt->bind_param("ss", $deliveryPartner, $id);
     $stmt->execute();
 
