@@ -78,12 +78,172 @@ if (isset($_GET['ajax'])) {
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!-- SweetAlert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/sweetalert/dist/sweetalert.css">
+
     <!-- SideBar-Menu CSS -->
     <link rel="stylesheet" href="../css/styles.css">
 
     <!-- Other CSS -->
-    <link rel="stylesheet" href="../css/Other.css">
+    <link rel="stylesheet" href="../css/DMTImportRecords.css">
 
+    <script>
+        $(document).ready(function () {
+            $(".hamburger .hamburger__inner").click(function () {
+                $(".wrapper").toggleClass("active");
+            });
+
+            $(".top_navbar .fas").click(function () {
+                $(".profile_dd").toggleClass("active");
+            });
+
+            // Check for success, duplicates, and error parameters in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            if (success) {
+                swal({
+                    title: 'New records Added Successfully',
+                    text: 'Added To Database...',
+                    icon: 'success',
+                    timer: 2000,
+                    buttons: false
+                });
+            }
+
+            const duplicates = urlParams.get('duplicates');
+            if (duplicates) {
+                swal({
+                    title: 'Same Record Found',
+                    text: `Total Rejected Records: ${duplicates}`,
+                    icon: 'warning'
+                });
+            }
+
+            const error = urlParams.get('error');
+            if (error === 'invalid_file') {
+                swal({
+                    title: 'Invalid File !!!',
+                    text: 'Please upload a valid file.',
+                    icon: 'error'
+                });
+            }
+        });
+    </script>
+</head>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bamagate Delivery App</title>
+    <link rel="stylesheet" href="../css/dataManagementStyle.css">
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <style>
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-container div {
+            width: 48%;
+        }
+
+        input[type="date"],
+        input[type="text"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        button {
+            background-color: navy;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #44b555;
+        }
+
+        .pagination-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-start;
+            /* Align items to the left */
+            overflow-x: auto;
+            /* Enable horizontal scrolling */
+            white-space: nowrap;
+            /* Prevent wrapping */
+            padding: 10px 0;
+            /* Add some padding for aesthetics */
+        }
+
+        .pagination-container::-webkit-scrollbar {
+            height: 6px;
+            /* Custom scrollbar height */
+        }
+
+        .pagination-container::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 10px;
+        }
+
+        .pagination button {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            color: black;
+            padding: 6px 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 0 2px;
+            /* Adjust margin for spacing */
+        }
+
+        .pagination button.active {
+            background-color: navy;
+            color: white;
+            border: 1px solid navy;
+        }
+
+        .pagination button:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+
+
+        .ImportRecordsTable {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .ImportRecordsTable table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        .ImportRecordsTable th,
+        .ImportRecordsTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
 
 
     <script>
@@ -173,10 +333,9 @@ if (isset($_GET['ajax'])) {
                 </div>
             </div>
         </div>
-
         <div class="main_container">
-            <!-- SideBar -->
-            <?php include './Components/Sidebar.php' ?>
+            <!-- Side Bar -->
+            <?php include './Components/DataManageSidebar.php'; ?>
 
             <!-- Content Container -->
             <div class="container">
@@ -229,9 +388,12 @@ if (isset($_GET['ajax'])) {
                 </div>
 
             </div>
+
         </div>
+
     </div>
     <footer class="credit"> </footer>
+
 </body>
 
 </html>
