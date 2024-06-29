@@ -13,7 +13,7 @@ if (!isset($_SESSION['username'])) {
 function fetchRecordsByDate($date)
 {
     global $conn;
-    $query = "SELECT * FROM importrecords WHERE DATE(Date) = ?";
+    $query = "SELECT ID, ShippingName, ShippingCity, ShippingPhone, OutstandingBalance, DeliveryPartner, PackingStatus FROM importrecords WHERE DATE(Date) = ?";
     $stmt = $conn->prepare($query);
     if ($stmt === false) {
         return [];
@@ -88,6 +88,38 @@ if (isset($_GET['date'])) {
             margin-left: 250px;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+
+
+            // Click event handler for the buttons in the table
+            $('.recordsTable').on('click', '.update-status', function () {
+                var recordId = $(this).closest('tr').find('td:first').text(); // Assuming ID is in the first column
+
+                // Extract numeric part of ID (ignoring first character)
+                var numericId = recordId.substring(1);
+
+                // AJAX call to update PackingStatus
+                $.ajax({
+                    url: 'updatePackingStatus.php', // Update with your PHP file name for updating status
+                    type: 'POST',
+                    data: { record_id: numericId }, // Send the modified numeric ID
+                    success: function (response) {
+                        // Refresh records table after successful update
+                        $('#date-filter').trigger('change'); // Trigger date change to reload records
+                        swal("Success", response, "success");
+                    },
+                    error: function (xhr, status, error) {
+                        swal("Error", "Failed to update packing status: " + error, "error");
+                    }
+                });
+            });
+
+
+        });
+
+
+    </script>
 </head>
 
 <body>
@@ -140,14 +172,12 @@ if (isset($_GET['date'])) {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Financial Status</th>
                                 <th>Shipping Name</th>
-                                <th>Shipping Address</th>
                                 <th>Shipping City</th>
-                                <th>Shipping Phone</th>
-                                <th>Outstanding Balance</th>
-                                <th>Date</th>
+                                <th>Phone No</th>
+                                <th>COD</th>
                                 <th>Delivery Partner</th>
+                                <th>Packing Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -174,7 +204,7 @@ if (isset($_GET['date'])) {
                 var selectedDate = $(this).val();
                 if (selectedDate) {
                     $.ajax({
-                        url: '',
+                        url: 'recordStatus.php', // Update with your PHP file name
                         type: 'GET',
                         data: {
                             date: selectedDate
@@ -186,18 +216,28 @@ if (isset($_GET['date'])) {
                                 records.forEach(function (record) {
                                     tableBody += '<tr>';
                                     tableBody += '<td>' + record.ID + '</td>';
-                                    tableBody += '<td>' + record.FinancialStatus + '</td>';
                                     tableBody += '<td>' + record.ShippingName + '</td>';
-                                    tableBody += '<td>' + record.ShippingAddress1 + '</td>';
                                     tableBody += '<td>' + record.ShippingCity.trim() + '</td>';
                                     tableBody += '<td>' + record.ShippingPhone + '</td>';
                                     tableBody += '<td>' + record.OutstandingBalance + '</td>';
-                                    tableBody += '<td>' + record.Date + '</td>';
                                     tableBody += '<td>' + record.DeliveryPartner + '</td>';
+
+
+
+                                    if (record.PackingStatus === '') {
+                                        tableBody += '<td><button class="update-status" style="background-color: red;">X</button></td>';
+                                    } else if (record.PackingStatus === 'Completed') {
+                                        tableBody += '<td><button style="background-color: green;">R</button></td>';
+                                    } else {
+                                        tableBody += '<td>' + record.PackingStatus + '</td>';
+                                    }
+
+
+
                                     tableBody += '</tr>';
                                 });
                             } else {
-                                tableBody = '<tr><td colspan="9">No records found.</td></tr>';
+                                tableBody = '<tr><td colspan="7">No records found.</td></tr>';
                             }
                             $('.recordsTable tbody').html(tableBody);
                             $('.recordsTable').show();
