@@ -81,18 +81,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
           </a>
         </li>
 
-        <li class="has-submenu">
-          <a href="#" <?php if ($current_page === 'ReportDailyProcessing.php' || $current_page === 'ReportDeliveryPartner.php')
-            echo 'class="active"'; ?>>
-            <span class="icon"><i class="fab fa-elementor"></i></span>
-            <span class="title">Reports</span>
-            <span class="arrowReports"><i class="fas fa-chevron-down"></i></span>
-          </a>
-          <ul class="submenu">
-            <li><a href="ReportDeliveryPartner.php">Delivery Partner</a></li>
-          </ul>
-        </li>
-
         <li>
           <a href="ManageCities.php" <?php if ($current_page === 'ManageCities.php')
             echo 'class="active"'; ?>>
@@ -101,7 +89,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
           </a>
         </li>
 
-
+        <li>
+          <a href="DeliveryReports.php" <?php if ($current_page === 'DeliveryReports.php')
+            echo 'class="active"'; ?>>
+            <span class="icon"><i class="fas fa-truck"></i></span>
+            <span class="title">Delivery Record</span>
+          </a>
+        </li>
 
       </ul>
     </div>
