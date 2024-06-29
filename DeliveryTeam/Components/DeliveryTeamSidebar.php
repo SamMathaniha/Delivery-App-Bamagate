@@ -96,7 +96,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <li>
           <a href="ManageCities.php" <?php if ($current_page === 'ManageCities.php')
             echo 'class="active"'; ?>>
-            <span class="icon"><i class="fas fa-tasks"></i></span>
+            <span class="icon"><i class="fas fa-globe"></i></span>
             <span class="title">Manage Cities</span>
           </a>
         </li>
