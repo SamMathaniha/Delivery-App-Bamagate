@@ -97,6 +97,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
           </a>
         </li>
 
+        <li>
+          <a href="RecordStatus.php" <?php if ($current_page === 'RecordStatus.php')
+            echo 'class="active"'; ?>>
+            <span class="icon"><i class="fas fa-signal"></i></span>
+            <span class="title">Record Status</span>
+          </a>
+        </li>
+
       </ul>
     </div>
   </div>
