@@ -71,6 +71,7 @@ if (!isset($_SESSION['username'])) {
             <div class="container">
                 <!-- Side Bar -->
                 <?php include './Components/DeliveryTeamSidebar.php'; ?>
+
                 <header class="intro">
                     <h1>Bamagate Delivery App</h1>
                 </header>

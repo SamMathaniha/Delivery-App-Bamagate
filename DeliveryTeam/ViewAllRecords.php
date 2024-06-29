@@ -73,16 +73,19 @@ if (isset($_GET['ajax'])) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Bamagate Delivery App - Orders</title>
+    <title>Bamagate Delivery App</title>
 
-    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <!-- SideBar-Menu CSS -->
-    <link rel="stylesheet" href="../css/styles.css">
+
+    <!-- Side bar CSS -->
+    <link rel="stylesheet" href="../css/DeliveryTeamStyle.css">
 
     <!-- Other CSS -->
-    <link rel="stylesheet" href="../css/Other.css">
+    <link rel="stylesheet" href="../css/DTAllRecords.css">
+
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
     <style>
         .filter-container {
@@ -108,7 +111,7 @@ if (isset($_GET['ajax'])) {
         }
 
         button {
-            background-color: green;
+            background-color: brown;
             color: white;
             cursor: pointer;
             transition: background-color 0.3s;
@@ -155,7 +158,7 @@ if (isset($_GET['ajax'])) {
         }
 
         .pagination button.active {
-            background-color: navy;
+            background-color: brown;
             color: white;
             border: 1px solid navy;
         }
@@ -185,9 +188,6 @@ if (isset($_GET['ajax'])) {
             text-align: left;
         }
     </style>
-
-
-
 
     <script>
         $(document).ready(function () {
@@ -276,10 +276,9 @@ if (isset($_GET['ajax'])) {
                 </div>
             </div>
         </div>
-
         <div class="main_container">
-            <!-- SideBar -->
-            <?php include './Components/Sidebar.php' ?>
+            <!-- Side Bar -->
+            <?php include './Components/DeliveryTeamSidebar.php'; ?>
 
             <!-- Content Container -->
             <div class="container">

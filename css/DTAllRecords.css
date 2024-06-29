@@ -1,0 +1,101 @@
+<style>
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-container div {
+            width: 48%;
+        }
+
+        input[type="date"],
+        input[type="text"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        button {
+            background-color: navy;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #44b555;
+        }
+
+        .pagination-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-start;
+            /* Align items to the left */
+            overflow-x: auto;
+            /* Enable horizontal scrolling */
+            white-space: nowrap;
+            /* Prevent wrapping */
+            padding: 10px 0;
+            /* Add some padding for aesthetics */
+        }
+
+        .pagination-container::-webkit-scrollbar {
+            height: 6px;
+            /* Custom scrollbar height */
+        }
+
+        .pagination-container::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 10px;
+        }
+
+        .pagination button {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            color: black;
+            padding: 6px 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 0 2px;
+            /* Adjust margin for spacing */
+        }
+
+        .pagination button.active {
+            background-color: navy;
+            color: white;
+            border: 1px solid navy;
+        }
+
+        .pagination button:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+
+
+        .ImportRecordsTable {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .ImportRecordsTable table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        .ImportRecordsTable th,
+        .ImportRecordsTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
