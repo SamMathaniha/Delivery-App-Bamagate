@@ -13,7 +13,7 @@ if (!isset($_SESSION['username'])) {
 function fetchRecordsByDate($date)
 {
     global $conn;
-    $query = "SELECT ID, ShippingName, ShippingCity, ShippingPhone, OutstandingBalance, DeliveryPartner, PackingStatus FROM importrecords WHERE DATE(Date) = ?";
+    $query = "SELECT UniqueID, ID, ShippingName, ShippingCity, ShippingPhone, OutstandingBalance, DeliveryPartner, PackingStatus FROM importrecords WHERE DATE(Date) = ?";
     $stmt = $conn->prepare($query);
     if ($stmt === false) {
         return [];
@@ -84,26 +84,86 @@ if (isset($_GET['date'])) {
             text-align: left;
         }
 
+        .recordsTable td {
+            text-align: center;
+        }
+
+        .recordsTable button {
+            padding: 12px 20px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+        }
+
+        .recordsTable button i {
+            margin-right: 5px;
+        }
+
+
         .DatePicker {
             margin-left: 250px;
         }
     </style>
     <script>
         $(document).ready(function () {
+            // Function to fetch records based on selected date
+            $('#date-filter').on('change', function () {
+                var selectedDate = $(this).val();
+                if (selectedDate) {
+                    $.ajax({
+                        url: 'recordStatus.php', // PHP file to fetch records
+                        type: 'GET',
+                        data: {
+                            date: selectedDate
+                        },
+                        success: function (data) {
+                            var records = JSON.parse(data);
+                            var tableBody = '';
+                            if (records.length > 0) {
+                                records.forEach(function (record) {
+                                    tableBody += '<tr>';
+                                    tableBody += '<td>' + record.UniqueID + '</td>';
+                                    tableBody += '<td>' + record.ID + '</td>';
+                                    tableBody += '<td>' + record.ShippingName + '</td>';
+                                    tableBody += '<td>' + record.ShippingCity.trim() + '</td>';
+                                    tableBody += '<td>' + record.ShippingPhone + '</td>';
+                                    tableBody += '<td>' + record.OutstandingBalance + '</td>';
+                                    tableBody += '<td>' + record.DeliveryPartner + '</td>';
+
+                                    // Check PackingStatus and append appropriate buttons with icons
+                                    if (record.PackingStatus === '') {
+                                        tableBody += '<td><button class="update-status" style="background-color: red; color: white;"><i class="fas fa-thumbs-down"></i></button></td>';
+                                    } else if (record.PackingStatus === 'Completed') {
+                                        tableBody += '<td><button class="update-completed" style="background-color: green; color: white;"><i class="fas fa-thumbs-up"></i></button></td>';
+                                    } else {
+                                        tableBody += '<td>' + record.PackingStatus + '</td>';
+                                    }
 
 
-            // Click event handler for the buttons in the table
+                                    tableBody += '</tr>';
+                                });
+                            } else {
+                                tableBody = '<tr><td colspan="8">No records found.</td></tr>';
+                            }
+                            $('.recordsTable tbody').html(tableBody);
+                            $('.recordsTable').show();
+                        }
+                    });
+                } else {
+                    $('.recordsTable').hide();
+                }
+            });
+
+            // Click event handler for updating packing status
             $('.recordsTable').on('click', '.update-status', function () {
                 var recordId = $(this).closest('tr').find('td:first').text(); // Assuming ID is in the first column
 
-                // Extract numeric part of ID (ignoring first character)
-                var numericId = recordId.substring(1);
-
                 // AJAX call to update PackingStatus
                 $.ajax({
-                    url: 'updatePackingStatus.php', // Update with your PHP file name for updating status
+                    url: 'updateStatus.php', // PHP file to update status
                     type: 'POST',
-                    data: { record_id: numericId }, // Send the modified numeric ID
+                    data: { record_id: recordId },
                     success: function (response) {
                         // Refresh records table after successful update
                         $('#date-filter').trigger('change'); // Trigger date change to reload records
@@ -115,10 +175,26 @@ if (isset($_GET['date'])) {
                 });
             });
 
+            // Click event handler for resetting packing status
+            $('.recordsTable').on('click', '.update-completed', function () {
+                var recordId = $(this).closest('tr').find('td:first').text(); // Assuming ID is in the first column
 
+                // AJAX call to reset PackingStatus to empty
+                $.ajax({
+                    url: 'resetStatus.php', // PHP file to handle reset
+                    type: 'POST',
+                    data: { record_id: recordId },
+                    success: function (response) {
+                        // Refresh records table after successful update
+                        $('#date-filter').trigger('change'); // Trigger date change to reload records
+                        swal("Success", response, "success");
+                    },
+                    error: function (xhr, status, error) {
+                        swal("Error", "Failed to reset packing status: " + error, "error");
+                    }
+                });
+            });
         });
-
-
     </script>
 </head>
 
@@ -171,6 +247,7 @@ if (isset($_GET['date'])) {
                     <table>
                         <thead>
                             <tr>
+                                <th>UniqueID</th>
                                 <th>ID</th>
                                 <th>Shipping Name</th>
                                 <th>Shipping City</th>
@@ -198,54 +275,6 @@ if (isset($_GET['date'])) {
 
             $(".top_navbar .fas").click(function () {
                 $(".profile_dd").toggleClass("active");
-            });
-
-            $('#date-filter').on('change', function () {
-                var selectedDate = $(this).val();
-                if (selectedDate) {
-                    $.ajax({
-                        url: 'recordStatus.php', // Update with your PHP file name
-                        type: 'GET',
-                        data: {
-                            date: selectedDate
-                        },
-                        success: function (data) {
-                            var records = JSON.parse(data);
-                            var tableBody = '';
-                            if (records.length > 0) {
-                                records.forEach(function (record) {
-                                    tableBody += '<tr>';
-                                    tableBody += '<td>' + record.ID + '</td>';
-                                    tableBody += '<td>' + record.ShippingName + '</td>';
-                                    tableBody += '<td>' + record.ShippingCity.trim() + '</td>';
-                                    tableBody += '<td>' + record.ShippingPhone + '</td>';
-                                    tableBody += '<td>' + record.OutstandingBalance + '</td>';
-                                    tableBody += '<td>' + record.DeliveryPartner + '</td>';
-
-
-
-                                    if (record.PackingStatus === '') {
-                                        tableBody += '<td><button class="update-status" style="background-color: red;">X</button></td>';
-                                    } else if (record.PackingStatus === 'Completed') {
-                                        tableBody += '<td><button style="background-color: green;">R</button></td>';
-                                    } else {
-                                        tableBody += '<td>' + record.PackingStatus + '</td>';
-                                    }
-
-
-
-                                    tableBody += '</tr>';
-                                });
-                            } else {
-                                tableBody = '<tr><td colspan="7">No records found.</td></tr>';
-                            }
-                            $('.recordsTable tbody').html(tableBody);
-                            $('.recordsTable').show();
-                        }
-                    });
-                } else {
-                    $('.recordsTable').hide();
-                }
             });
         });
     </script>
