@@ -13,7 +13,7 @@ if (!isset($_SESSION['username'])) {
 function fetchRecordsByDate($date)
 {
     global $conn;
-    $query = "SELECT UniqueID, ID, ShippingName, ShippingCity, ShippingPhone, OutstandingBalance, DeliveryPartner, PackingStatus FROM importrecords WHERE DATE(Date) = ?";
+    $query = "SELECT UniqueID, ID, ShippingName, ShippingCity, ShippingPhone, OutstandingBalance, DeliveryPartner, PackingStatus, FulfilledStatus FROM importrecords WHERE DATE(Date) = ?";
     $stmt = $conn->prepare($query);
     if ($stmt === false) {
         return [];
@@ -100,7 +100,6 @@ if (isset($_GET['date'])) {
             margin-right: 5px;
         }
 
-
         .DatePicker {
             margin-left: 250px;
         }
@@ -133,18 +132,26 @@ if (isset($_GET['date'])) {
 
                                     // Check PackingStatus and append appropriate buttons with icons
                                     if (record.PackingStatus === '') {
-                                        tableBody += '<td><button class="update-status" style="background-color: red; color: white;"><i class="fas fa-thumbs-down"></i></button></td>';
+                                        tableBody += '<td><button class="update-status" style="background-color: red; color: white;" data-action="packing"><i class="fas fa-thumbs-down"></i></button></td>';
                                     } else if (record.PackingStatus === 'Completed') {
-                                        tableBody += '<td><button class="update-completed" style="background-color: green; color: white;"><i class="fas fa-thumbs-up"></i></button></td>';
+                                        tableBody += '<td><button class="reset-status" style="background-color: green; color: white;" data-action="packing"><i class="fas fa-thumbs-up"></i></button></td>';
                                     } else {
                                         tableBody += '<td>' + record.PackingStatus + '</td>';
                                     }
 
+                                    // Check FulfilledStatus and append appropriate buttons with icons
+                                    if (record.FulfilledStatus === '') {
+                                        tableBody += '<td><button class="update-status" style="background-color: red; color: white;" data-action="fulfilled"><i class="fas fa-thumbs-down"></i></button></td>';
+                                    } else if (record.FulfilledStatus === 'Completed') {
+                                        tableBody += '<td><button class="reset-status" style="background-color: green; color: white;" data-action="fulfilled"><i class="fas fa-thumbs-up"></i></button></td>';
+                                    } else {
+                                        tableBody += '<td>' + record.FulfilledStatus + '</td>';
+                                    }
 
                                     tableBody += '</tr>';
                                 });
                             } else {
-                                tableBody = '<tr><td colspan="8">No records found.</td></tr>';
+                                tableBody = '<tr><td colspan="9">No records found.</td></tr>';
                             }
                             $('.recordsTable tbody').html(tableBody);
                             $('.recordsTable').show();
@@ -155,42 +162,44 @@ if (isset($_GET['date'])) {
                 }
             });
 
-            // Click event handler for updating packing status
+            // Click event handler for updating status
             $('.recordsTable').on('click', '.update-status', function () {
                 var recordId = $(this).closest('tr').find('td:first').text(); // Assuming ID is in the first column
+                var action = $(this).data('action'); // Get the action (packing or fulfilled)
 
-                // AJAX call to update PackingStatus
+                // AJAX call to update status
                 $.ajax({
                     url: 'updateStatus.php', // PHP file to update status
                     type: 'POST',
-                    data: { record_id: recordId },
+                    data: { record_id: recordId, action: action },
                     success: function (response) {
                         // Refresh records table after successful update
                         $('#date-filter').trigger('change'); // Trigger date change to reload records
                         swal("Success", response, "success");
                     },
                     error: function (xhr, status, error) {
-                        swal("Error", "Failed to update packing status: " + error, "error");
+                        swal("Error", "Failed to update " + action + " status: " + error, "error");
                     }
                 });
             });
 
-            // Click event handler for resetting packing status
-            $('.recordsTable').on('click', '.update-completed', function () {
+            // Click event handler for resetting status
+            $('.recordsTable').on('click', '.reset-status', function () {
                 var recordId = $(this).closest('tr').find('td:first').text(); // Assuming ID is in the first column
+                var action = $(this).data('action'); // Get the action (packing or fulfilled)
 
-                // AJAX call to reset PackingStatus to empty
+                // AJAX call to reset status
                 $.ajax({
                     url: 'resetStatus.php', // PHP file to handle reset
                     type: 'POST',
-                    data: { record_id: recordId },
+                    data: { record_id: recordId, action: action },
                     success: function (response) {
                         // Refresh records table after successful update
                         $('#date-filter').trigger('change'); // Trigger date change to reload records
                         swal("Success", response, "success");
                     },
                     error: function (xhr, status, error) {
-                        swal("Error", "Failed to reset packing status: " + error, "error");
+                        swal("Error", "Failed to reset " + action + " status: " + error, "error");
                     }
                 });
             });
@@ -255,6 +264,7 @@ if (isset($_GET['date'])) {
                                 <th>COD</th>
                                 <th>Delivery Partner</th>
                                 <th>Packing Status</th>
+                                <th>Fulfilled Status</th>
                             </tr>
                         </thead>
                         <tbody>
