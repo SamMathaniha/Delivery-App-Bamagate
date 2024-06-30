@@ -13,7 +13,7 @@ if (!isset($_SESSION['username'])) {
 function fetchRecordsByDate($date)
 {
     global $conn;
-    $query = "SELECT UniqueID, ID, ShippingName, ShippingCity, ShippingPhone, OutstandingBalance, DeliveryPartner, PackingStatus, FulfilledStatus FROM importrecords WHERE DATE(Date) = ?";
+    $query = "SELECT UniqueID, ID, ShippingName, ShippingCity, ShippingPhone, OutstandingBalance, DeliveryPartner, PackingStatus, FulfilledStatus, CallStatus, DispatchStatus, ItemRemarks FROM importrecords WHERE DATE(Date) = ?";
     $stmt = $conn->prepare($query);
     if ($stmt === false) {
         return [];
@@ -38,6 +38,8 @@ if (isset($_GET['date'])) {
     exit();
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -101,7 +103,17 @@ if (isset($_GET['date'])) {
         }
 
         .DatePicker {
-            margin-left: 250px;
+            margin-left: 20px;
+        }
+
+        .recordsTable textarea {
+            width: 100%;
+            min-height: 50px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            /* Allow vertical resizing */
         }
     </style>
     <script>
@@ -130,7 +142,9 @@ if (isset($_GET['date'])) {
                                     tableBody += '<td>' + record.OutstandingBalance + '</td>';
                                     tableBody += '<td>' + record.DeliveryPartner + '</td>';
 
-                                    // Check PackingStatus and append appropriate buttons with icons
+
+
+                                    // PackingStatus
                                     if (record.PackingStatus === '') {
                                         tableBody += '<td><button class="update-status" style="background-color: red; color: white;" data-action="packing"><i class="fas fa-thumbs-down"></i></button></td>';
                                     } else if (record.PackingStatus === 'Completed') {
@@ -139,19 +153,39 @@ if (isset($_GET['date'])) {
                                         tableBody += '<td>' + record.PackingStatus + '</td>';
                                     }
 
-                                    // Check FulfilledStatus and append appropriate buttons with icons
+                                    // FulfilledStatus
                                     if (record.FulfilledStatus === '') {
-                                        tableBody += '<td><button class="update-status" style="background-color: red; color: white;" data-action="fulfilled"><i class="fas fa-thumbs-down"></i></button></td>';
+                                        tableBody += '<td><button class="update-status" style="background-color: red; color: white;" data-action="fulfilled"><i class="fas fa-thumbs-down"></i></td>';
                                     } else if (record.FulfilledStatus === 'Completed') {
                                         tableBody += '<td><button class="reset-status" style="background-color: green; color: white;" data-action="fulfilled"><i class="fas fa-thumbs-up"></i></button></td>';
                                     } else {
                                         tableBody += '<td>' + record.FulfilledStatus + '</td>';
                                     }
 
+                                    // CallStatus
+                                    if (record.CallStatus === '') {
+                                        tableBody += '<td><button class="update-status" style="background-color: red; color: white;" data-action="call"><i class="fas fa-thumbs-down"></i></button></td>';
+                                    } else if (record.CallStatus === 'Completed') {
+                                        tableBody += '<td><button class="reset-status" style="background-color: green; color: white;" data-action="call"><i class="fas fa-thumbs-up"></i></button></td>';
+                                    } else {
+                                        tableBody += '<td>' + record.CallStatus + '</td>';
+                                    }
+
+                                    // DispatchStatus
+                                    if (record.DispatchStatus === '') {
+                                        tableBody += '<td><button class="update-status" style="background-color: red; color: white;" data-action="dispatch"><i class="fas fa-thumbs-down"></i></button></td>';
+                                    } else if (record.DispatchStatus === 'Completed') {
+                                        tableBody += '<td><button class="reset-status" style="background-color: green; color: white;" data-action="dispatch"><i class="fas fa-thumbs-up"></i></button></td>';
+                                    } else {
+                                        tableBody += '<td>' + record.DispatchStatus + '</td>';
+                                    }
+
+                                    // Remarks
+                                    tableBody += '<td><textarea class="remarks-input">' + record.ItemRemarks + '</textarea></td>';
                                     tableBody += '</tr>';
                                 });
                             } else {
-                                tableBody = '<tr><td colspan="9">No records found.</td></tr>';
+                                tableBody = '<tr><td colspan="11">No records found.</td></tr>';
                             }
                             $('.recordsTable tbody').html(tableBody);
                             $('.recordsTable').show();
@@ -165,7 +199,7 @@ if (isset($_GET['date'])) {
             // Click event handler for updating status
             $('.recordsTable').on('click', '.update-status', function () {
                 var recordId = $(this).closest('tr').find('td:first').text(); // Assuming ID is in the first column
-                var action = $(this).data('action'); // Get the action (packing or fulfilled)
+                var action = $(this).data('action'); // Get the action (packing, fulfilled, call, dispatch)
 
                 // AJAX call to update status
                 $.ajax({
@@ -186,7 +220,7 @@ if (isset($_GET['date'])) {
             // Click event handler for resetting status
             $('.recordsTable').on('click', '.reset-status', function () {
                 var recordId = $(this).closest('tr').find('td:first').text(); // Assuming ID is in the first column
-                var action = $(this).data('action'); // Get the action (packing or fulfilled)
+                var action = $(this).data('action'); // Get the action (packing, fulfilled, call, dispatch)
 
                 // AJAX call to reset status
                 $.ajax({
@@ -194,7 +228,7 @@ if (isset($_GET['date'])) {
                     type: 'POST',
                     data: { record_id: recordId, action: action },
                     success: function (response) {
-                        // Refresh records table after successful update
+                        // Refresh records table after successful reset
                         $('#date-filter').trigger('change'); // Trigger date change to reload records
                         swal("Success", response, "success");
                     },
@@ -203,6 +237,27 @@ if (isset($_GET['date'])) {
                     }
                 });
             });
+
+            // Click event handler for updating remarks
+            $('.recordsTable').on('change', '.remarks-input', function () {
+                var recordId = $(this).closest('tr').find('td:first').text(); // Assuming ID is in the first column
+                var remarks = $(this).val(); // Get remarks from textarea
+
+                // AJAX call to update remarks
+                $.ajax({
+                    url: 'updateStatus.php', // PHP file to update status
+                    type: 'POST',
+                    data: { record_id: recordId, action: 'remarks', remarks: remarks },
+                    success: function (response) {
+                        swal("Success", response, "success");
+                    },
+                    error: function (xhr, status, error) {
+                        swal("Error", "Failed to update remarks: " + error, "error");
+                    }
+                });
+            });
+
+
         });
     </script>
 </head>
@@ -265,6 +320,10 @@ if (isset($_GET['date'])) {
                                 <th>Delivery Partner</th>
                                 <th>Packing Status</th>
                                 <th>Fulfilled Status</th>
+                                <th>Call Status</th>
+                                <th>Dispatch Status</th>
+                                <th>Item OTS / Any remarks</th>
+
                             </tr>
                         </thead>
                         <tbody>
