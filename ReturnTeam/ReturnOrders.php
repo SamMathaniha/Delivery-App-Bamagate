@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 // Check if the user is logged in
@@ -10,7 +9,7 @@ if (!isset($_SESSION['username'])) {
 
 include "../config.php";
 
-/// Fetch records filtered by ID
+// Fetch records filtered by ID
 $id_filter = isset($_GET['id']) ? $_GET['id'] : '';
 
 $query = "SELECT * FROM importrecords WHERE 1";
@@ -24,7 +23,6 @@ if ($id_filter) {
 $query .= " ORDER BY Date DESC";
 
 $result = $conn->query($query);
-
 
 // If it's an AJAX request, return the JSON response and exit
 if (isset($_GET['ajax'])) {
@@ -40,6 +38,18 @@ if (isset($_GET['ajax'])) {
 if (isset($_POST['confirm_return'])) {
     $return_id = $_POST['return_id'];
     $update_query = "UPDATE importrecords SET `Return` = 'Confirmed Return' WHERE ID = '$return_id'";
+    if ($conn->query($update_query) === TRUE) {
+        echo "Record updated successfully";
+    } else {
+        echo "Error updating record: " . $conn->error;
+    }
+    exit;
+}
+
+// Handle the cancel return confirmation
+if (isset($_POST['cancel_return'])) {
+    $return_id = $_POST['return_id'];
+    $update_query = "UPDATE importrecords SET `Return` = '' WHERE ID = '$return_id'";
     if ($conn->query($update_query) === TRUE) {
         echo "Record updated successfully";
     } else {
@@ -95,11 +105,15 @@ if (isset($_POST['confirm_return'])) {
                                 tableBody += '<td>' + record.OutstandingBalance + '</td>';
                                 tableBody += '<td>' + record.Date + '</td>';
                                 tableBody += '<td>' + record.DeliveryPartner + '</td>';
-                                tableBody += '<td><button class="confirm-return" data-id="' + record.ID + '">Confirm Return</button></td>';
+                                if (record.Return === 'Confirmed Return') {
+                                    tableBody += '<td><button class="cancel-return" data-id="' + record.ID + '">Cancel Confirmed Return</button></td>';
+                                } else {
+                                    tableBody += '<td><button class="confirm-return" data-id="' + record.ID + '">Confirm Return</button></td>';
+                                }
                                 tableBody += '</tr>';
                             });
                         } else {
-                            tableBody = '<tr><td colspan="14">No records found.</td></tr>';
+                            tableBody = '<tr><td colspan="10">No records found.</td></tr>';
                         }
                         $('.ImportRecordsTable tbody').html(tableBody);
                     }
@@ -123,10 +137,30 @@ if (isset($_POST['confirm_return'])) {
                 });
             });
 
+            // Handle cancel return button click
+            $(document).on('click', '.cancel-return', function () {
+                var returnId = $(this).data('id');
+                $.ajax({
+                    url: '',
+                    type: 'POST',
+                    data: {
+                        cancel_return: true,
+                        return_id: returnId
+                    },
+                    success: function (response) {
+                        alert(response);
+                        filterRecords(); // Refresh the table
+                    }
+                });
+            });
+
             // Handle "All Records" button click
             $('#all-records-btn').click(function () {
                 window.location.href = 'ReturnOrders.php';
             });
+
+            // Initial load of records
+            filterRecords();
         });
     </script>
 
@@ -170,6 +204,29 @@ if (isset($_POST['confirm_return'])) {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
+        }
+
+        /* CSS for buttons */
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .cancel-return {
+            background-color: #dc3545;
+        }
+
+        .cancel-return:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
@@ -220,34 +277,55 @@ if (isset($_POST['confirm_return'])) {
                         <button id="all-records-btn">All Records</button>
                     </div>
                 </div>
-                <?php
-                if ($result->num_rows > 0) {
-                    echo "<div class='ImportRecordsTable'>";
-                    echo "<table>";
-                    echo "<thead><tr><th>ID</th><th>Financial Status</th><th>Shipping Name</th><th>Shipping Address</th><th>Shipping City</th><th>Shipping Phone</th><th>Outstanding Balance</th><th>Date</th><th>Delivery Partner</th></tr></thead>";
-                    echo "<tbody>";
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . $row['ID'] . "</td>";
-                        echo "<td>" . $row['FinancialStatus'] . "</td>";
-                        echo "<td>" . $row['ShippingName'] . "</td>";
-                        echo "<td>" . $row['ShippingAddress1'] . "</td>";
-                        echo "<td>" . $row['ShippingCity'] . "</td>";
-                        echo "<td>" . $row['ShippingPhone'] . "</td>";
-                        echo "<td>" . $row['OutstandingBalance'] . "</td>";
-                        echo "<td>" . $row['Date'] . "</td>";
-                        echo "<td>" . $row['DeliveryPartner'] . "</td>";
-                        echo "</tr>";
-                    }
-                    echo "</tbody></table></div>";
-                } else {
-                    echo "<p>No records found.</p>";
-                }
-                ?>
+                <div class="ImportRecordsTable">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Financial Status</th>
+                                <th>Shipping Name</th>
+                                <th>Shipping Address</th>
+                                <th>Shipping City</th>
+                                <th>Shipping Phone</th>
+                                <th>Outstanding Balance</th>
+                                <th>Date</th>
+                                <th>Delivery Partner</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<tr>";
+                                    echo "<td>" . $row['ID'] . "</td>";
+                                    echo "<td>" . $row['FinancialStatus'] . "</td>";
+                                    echo "<td>" . $row['ShippingName'] . "</td>";
+                                    echo "<td>" . $row['ShippingAddress1'] . "</td>";
+                                    echo "<td>" . $row['ShippingCity'] . "</td>";
+                                    echo "<td>" . $row['ShippingPhone'] . "</td>";
+                                    echo "<td>" . $row['OutstandingBalance'] . "</td>";
+                                    echo "<td>" . $row['Date'] . "</td>";
+                                    echo "<td>" . $row['DeliveryPartner'] . "</td>";
+                                    if ($row['Return'] === 'Confirmed Return') {
+                                        echo '<td><button class="cancel-return" data-id="' . $row['ID'] . '">Cancel Confirmed Return</button></td>';
+                                    } else {
+                                        echo '<td><button class="confirm-return" data-id="' . $row['ID'] . '">Confirm Return</button></td>';
+                                    }
+                                    echo "</tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='10'>No records found.</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-    <footer class="credit"> </footer>
+
+    <footer class="credit"></footer>
 </body>
 
 </html>

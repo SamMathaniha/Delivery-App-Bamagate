@@ -21,7 +21,7 @@
 }
 
 .top_navbar{
-  background: #f9affc;
+  background: #5d0559;
   height: 60px;
   display: flex;
   position: fixed;
@@ -31,7 +31,7 @@
 
 .top_navbar .hamburger{
   width: 80px;
-  background: #d685e4;
+  background: #2f032f;
   position: relative;
   font-size: 28px;
 }
