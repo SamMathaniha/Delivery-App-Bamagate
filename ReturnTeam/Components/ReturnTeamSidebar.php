@@ -56,7 +56,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <div class="sidebar__inner">
       <div class="profile">
         <div class="img">
-          <img src="../img/DeliveryLogo.png" alt="profile_pic">
+          <img src="../img/ReturnUser.png" alt="profile_pic">
         </div>
         <div class="profile_info">
           <p>Welcome</p>
@@ -68,42 +68,28 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <li>
           <a href="DeliveryTeamIndex.php" <?php if ($current_page === 'DeliveryTeamIndex.php')
             echo 'class="active"'; ?>>
-            <span class="icon"><i class="fas fa-dice-d6"></i></span>
-            <span class="title">Dashboard</span>
-          </a>
-        </li>
-
-        <li>
-          <a href="ViewAllRecords.php" <?php if ($current_page === 'ViewAllRecords.php')
-            echo 'class="active"'; ?>>
             <span class="icon"><i class="fas fa-tasks"></i></span>
             <span class="title">All Records</span>
           </a>
         </li>
 
         <li>
-          <a href="ManageCities.php" <?php if ($current_page === 'ManageCities.php')
+          <a href="ReturnOrders.php" <?php if ($current_page === 'ViewAllRecords.php')
             echo 'class="active"'; ?>>
-            <span class="icon"><i class="fas fa-globe"></i></span>
-            <span class="title">Manage Cities</span>
+            <span class="icon"><i class="fas fa-shipping-fast"></i></span>
+            <span class="title">Return Order</span>
           </a>
         </li>
 
         <li>
-          <a href="DeliveryReports.php" <?php if ($current_page === 'DeliveryReports.php')
+          <a href="AllReturnOrders.php" <?php if ($current_page === 'ManageCities.php')
             echo 'class="active"'; ?>>
-            <span class="icon"><i class="fas fa-truck"></i></span>
-            <span class="title">Delivery Record</span>
+            <span class="icon"><i class="fas fa-clipboard-list"></i></span>
+            <span class="title">All Returns</span>
           </a>
         </li>
 
-        <li>
-          <a href="RecordStatus.php" <?php if ($current_page === 'RecordStatus.php')
-            echo 'class="active"'; ?>>
-            <span class="icon"><i class="fas fa-signal"></i></span>
-            <span class="title">Record Status</span>
-          </a>
-        </li>
+
 
       </ul>
     </div>

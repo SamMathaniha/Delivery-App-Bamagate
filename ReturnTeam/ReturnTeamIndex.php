@@ -15,7 +15,7 @@ if (!isset($_SESSION['username'])) {
     <meta charset="UTF-8">
     <title>Bamagate Delivery App</title>
 
-    <link rel="stylesheet" href="../css/DeliveryTeamStyle.css">
+    <link rel="stylesheet" href="../css/ReturnTeamStyle.css">
 
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
 
