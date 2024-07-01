@@ -165,7 +165,7 @@ if (isset($_GET['ajax'])) {
         }
 
         .pagination button.active {
-            background-color: navy;
+            background-color: purple;
             color: white;
             border: 1px solid navy;
         }
@@ -177,7 +177,7 @@ if (isset($_GET['ajax'])) {
 
 
         .ImportRecordsTable {
-            max-height: 400px;
+            max-height: 450px;
             overflow-y: auto;
             margin-bottom: 20px;
         }

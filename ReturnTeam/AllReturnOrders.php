@@ -68,12 +68,13 @@ $result = $conn->query($query);
 
         /* Button styles */
         button {
-            padding: 10px 20px;
+            padding: 10px 50px;
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin-left: 10px;
             transition: background-color 0.3s ease;
         }
 
