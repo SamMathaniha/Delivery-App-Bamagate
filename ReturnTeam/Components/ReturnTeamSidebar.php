@@ -66,7 +66,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
       </div>
       <ul>
         <li>
-          <a href="DeliveryTeamIndex.php" <?php if ($current_page === 'DeliveryTeamIndex.php')
+          <a href="ReturnTeamIndex.php" <?php if ($current_page === 'ReturnTeamIndex.php')
             echo 'class="active"'; ?>>
             <span class="icon"><i class="fas fa-tasks"></i></span>
             <span class="title">All Records</span>
@@ -74,7 +74,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </li>
 
         <li>
-          <a href="ReturnOrders.php" <?php if ($current_page === 'ViewAllRecords.php')
+          <a href="ReturnOrders.php" <?php if ($current_page === 'ReturnOrders.php')
             echo 'class="active"'; ?>>
             <span class="icon"><i class="fas fa-shipping-fast"></i></span>
             <span class="title">Return Order</span>
@@ -82,7 +82,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </li>
 
         <li>
-          <a href="AllReturnOrders.php" <?php if ($current_page === 'ManageCities.php')
+          <a href="AllReturnOrders.php" <?php if ($current_page === 'AllReturnOrders.php')
             echo 'class="active"'; ?>>
             <span class="icon"><i class="fas fa-clipboard-list"></i></span>
             <span class="title">All Returns</span>
