@@ -33,6 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             case 'Delivery Team':
                header('Location: ./DeliveryTeam/DeliveryTeamIndex.php');
                break;
+            case 'Order Return Team':
+               header('Location: ./ReturnTeam/ReturnTeamIndex.php');
+               break;
             default:
                $error_message = 'Invalid user type';
          }
