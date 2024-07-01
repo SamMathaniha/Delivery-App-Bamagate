@@ -56,7 +56,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <div class="sidebar__inner">
       <div class="profile">
         <div class="img">
-          <img src="../img/pic.png" alt="profile_pic">
+          <img src="../img/pics.png" alt="profile_pic">
         </div>
         <div class="profile_info">
           <p>Welcome</p>
